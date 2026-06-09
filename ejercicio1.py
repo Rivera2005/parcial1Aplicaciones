@@ -45,8 +45,23 @@ class Tren:
     
     def enganchar_vagon(self, vagon: Vagon):
         peso_tren = self.obtener_peso_tren()
+        cantidad_vagonesCisterna = 0
+        peso_vagonesCisterna = 0.00
+        for vagoni in self._vagones:
+            if isinstance(vagoni, VagonCisterna):
+                cantidad_vagonesCisterna += 1
+                peso_vagonesCisterna += vagoni.calcular_peso_total()
+            
+        if isinstance(vagon, VagonCisterna):
+            cantidad_vagonesCisterna += 1
+            peso_vagonesCisterna += vagon.calcular_peso_total()
+                
         if peso_tren + vagon.calcular_peso_total() > self.locomotora.capacidad_arrastre:
             raise ValueError("Capacidad de arrastre excedida")
+        elif cantidad_vagonesCisterna  > 3 :
+            raise ValueError("Restricción de seguridad de Vagones Cisterna violada")
+        elif peso_vagonesCisterna > (peso_tren + vagon.calcular_peso_total()) * 0.6:
+            raise ValueError("Restricción de seguridad de Vagones Cisterna violada")
         else:
             self._vagones.append(vagon)
     
@@ -57,7 +72,5 @@ class Tren:
             peso_tren += vagon.calcular_peso_total()
         
         return peso_tren
-            
         
-        
-        
+                
